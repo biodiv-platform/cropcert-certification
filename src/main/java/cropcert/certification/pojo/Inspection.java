@@ -22,9 +22,11 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import cropcert.certification.pojo.enumtype.CertificationStatus;
+import cropcert.certification.pojo.enumtype.CertificationVersion;
 import cropcert.certification.pojo.enumtype.Decision;
 import cropcert.certification.pojo.enumtype.Quantity;
-
 import io.swagger.annotations.ApiModel;
 
 @Entity
@@ -47,6 +49,9 @@ public class Inspection implements Serializable {
 
 	@Column(name = "inspector_id", nullable = false)
 	private Long inspectorId;
+
+	@Column(name = "inspector_name")
+	private String inspectorName;
 
 	@Column(name = "farmer_id")
 	private Long farmerId;
@@ -157,6 +162,14 @@ public class Inspection implements Serializable {
 	@Column(name = "is_ft_contract_person_appointed")
 	private Boolean isFTContractPersonAppointed;
 
+	@Column(name = "certification_status")
+	private CertificationStatus certificationStatus;
+	@Column(name = "certification_version")
+	private CertificationVersion certificationVersion;
+
+	@Column(name = "geo_location")
+	private String geoLocation;
+
 	@JoinColumn(name = "farmer")
 	@OneToOne(cascade = CascadeType.ALL)
 	private Signature farmer;
@@ -260,6 +273,14 @@ public class Inspection implements Serializable {
 		this.inspectorId = inspectorId;
 	}
 
+	public String getInspectorName() {
+		return inspectorName;
+	}
+
+	public void setInspectorName(String inspectorName) {
+		this.inspectorName = inspectorName;
+	}
+
 	public Long getFarmerId() {
 		return farmerId;
 	}
@@ -315,11 +336,11 @@ public class Inspection implements Serializable {
 	public void setChemicalsOnNonCoffeeField(Boolean chemicalsOnNonCoffeeField) {
 		this.chemicalsOnNonCoffeeField = chemicalsOnNonCoffeeField;
 	}
-	
+
 	public Boolean getCutivatationNotConductedWithin5mWaterSource() {
 		return cutivatationNotConductedWithin5mWaterSource;
 	}
-	
+
 	public void setCutivatationNotConductedWithin5mWaterSource(Boolean cutivatationNotConductedWithin5mWaterSource) {
 		this.cutivatationNotConductedWithin5mWaterSource = cutivatationNotConductedWithin5mWaterSource;
 	}
@@ -449,7 +470,7 @@ public class Inspection implements Serializable {
 	}
 
 	public void setFarms(Set<FarmPlot> farms) {
-		for(FarmPlot farmPlot : farms)
+		for (FarmPlot farmPlot : farms)
 			farmPlot.setInspection(this);
 		this.farms = farms;
 	}
@@ -531,7 +552,7 @@ public class Inspection implements Serializable {
 	}
 
 	public void setAnimals(Set<Animal> animals) {
-		for(Animal animal : animals) 
+		for (Animal animal : animals)
 			animal.setInspection(this);
 		this.animals = animals;
 	}
@@ -549,7 +570,7 @@ public class Inspection implements Serializable {
 	}
 
 	public void setAdvices(Set<Advice> advices) {
-		for(Advice advice : advices) {
+		for (Advice advice : advices) {
 			advice.setInspection(this);
 		}
 		this.advices = advices;
@@ -625,6 +646,30 @@ public class Inspection implements Serializable {
 
 	public void setIsFTContractPersonAppointed(Boolean isFTContractPersonAppointed) {
 		this.isFTContractPersonAppointed = isFTContractPersonAppointed;
+	}
+
+	public CertificationStatus getCertificationStatus() {
+		return certificationStatus;
+	}
+
+	public void setCertificationStatus(CertificationStatus certificationStatus) {
+		this.certificationStatus = certificationStatus;
+	}
+
+	public CertificationVersion getCertificationVersion() {
+		return certificationVersion;
+	}
+
+	public void setCertificationVersion(CertificationVersion certificationVersion) {
+		this.certificationVersion = certificationVersion;
+	}
+
+	public String getGeoLocation() {
+		return geoLocation;
+	}
+
+	public void setGeoLocation(String geoLocation) {
+		this.geoLocation = geoLocation;
 	}
 
 	public Signature getFarmer() {

@@ -68,38 +68,6 @@ public class FarmersInspectionReport {
 		this.inspection = inspection;
 	}
 
-	public FarmersInspectionReport(Long id, String userName, String firstName, String lastName, Timestamp dateOfBirth,
-			String gender, String cellNumber, String email, String village, String subCountry, String membershipId,
-			Integer numCoffeePlots, Integer numCoffeeTrees, Float farmArea, Float coffeeArea, String farmerCode,
-			Long ccCode, String ccName, String coName, String unionName, Long fieldCoOrdinator, Integer version,
-			Integer subVersion, Inspection inspection) {
-		super();
-		this.id = id;
-		this.userName = userName;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.dateOfBirth = dateOfBirth;
-		this.gender = gender;
-		this.cellNumber = cellNumber;
-		this.email = email;
-		this.village = village;
-		this.subCountry = subCountry;
-		this.membershipId = membershipId;
-		this.numCoffeePlots = numCoffeePlots;
-		this.numCoffeeTrees = numCoffeeTrees;
-		this.farmArea = farmArea;
-		this.coffeeArea = coffeeArea;
-		this.farmerCode = farmerCode;
-		this.ccCode = ccCode;
-		this.ccName = ccName;
-		this.coName = coName;
-		this.unionName = unionName;
-		this.fieldCoOrdinator = fieldCoOrdinator;
-		this.version = version;
-		this.subVersion = subVersion;
-		this.inspection = inspection;
-	}
-
 	public Long getId() {
 		return id;
 	}
