@@ -28,9 +28,9 @@ import cropcert.certification.service.SynchronizationService;
 import cropcert.certification.util.UserUtil;
 import cropcert.user.ApiException;
 import cropcert.user.api.FarmerApi;
-import cropcert.user.api.InspectorApi;
+import cropcert.user.api.UserApi;
 import cropcert.user.model.Farmer;
-import cropcert.user.model.Inspector;
+import cropcert.user.model.User;
 
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
 
@@ -40,7 +40,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Inject
 	private FarmerApi farmerApi;
 
-	private InspectorApi inspectorApi;
+	private UserApi userApi;
 
 	@Inject
 	private InspectionService inspectionService;
@@ -59,7 +59,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	private String getInspectorName(Inspection inspection) {
 		try {
 			if (inspection != null) {
-				Inspector inspector = inspectorApi.find(inspection.getInspectorId());
+				User inspector = userApi.find(inspection.getInspectorId());
 				if (inspector == null)
 					return null;
 				return inspector.getFirstName();
