@@ -31,13 +31,16 @@ public class FarmersInspectionReport {
 	private Integer version;
 	private Integer subVersion;
 
+	private String inspectorName;
+
 	private Inspection inspection;
 
 	public FarmersInspectionReport() {
 		super();
 	}
 
-	public FarmersInspectionReport(Farmer farmer, Integer version, Integer subVersion, Inspection inspection) {
+	public FarmersInspectionReport(Farmer farmer, Integer version, Integer subVersion, String inspectorName,
+			Inspection inspection) {
 		this.id = farmer.getId();
 		this.userName = farmer.getUserName();
 		this.firstName = farmer.getFirstName();
@@ -64,6 +67,8 @@ public class FarmersInspectionReport {
 
 		this.version = version;
 		this.subVersion = subVersion;
+
+		this.inspectorName = inspectorName;
 
 		this.inspection = inspection;
 	}
@@ -250,6 +255,14 @@ public class FarmersInspectionReport {
 
 	public void setSubVersion(Integer subVersion) {
 		this.subVersion = subVersion;
+	}
+
+	public String getInspectorName() {
+		return inspectorName;
+	}
+
+	public void setInspectorName(String inspectorName) {
+		this.inspectorName = inspectorName;
 	}
 
 	public Inspection getInspection() {

@@ -50,9 +50,6 @@ public class Inspection implements Serializable {
 	@Column(name = "inspector_id", nullable = false)
 	private Long inspectorId;
 
-	@Column(name = "inspector_name")
-	private String inspectorName;
-
 	@Column(name = "farmer_id")
 	private Long farmerId;
 
@@ -271,14 +268,6 @@ public class Inspection implements Serializable {
 
 	public void setInspectorId(Long inspectorId) {
 		this.inspectorId = inspectorId;
-	}
-
-	public String getInspectorName() {
-		return inspectorName;
-	}
-
-	public void setInspectorName(String inspectorName) {
-		this.inspectorName = inspectorName;
 	}
 
 	public Long getFarmerId() {
