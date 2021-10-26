@@ -13,8 +13,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.inject.Inject;
 
 import cropcert.certification.dao.InspectionDao;
@@ -30,7 +28,9 @@ import cropcert.certification.service.SynchronizationService;
 import cropcert.certification.util.UserUtil;
 import cropcert.user.ApiException;
 import cropcert.user.api.FarmerApi;
+import cropcert.user.api.InspectorApi;
 import cropcert.user.model.Farmer;
+import cropcert.user.model.Inspector;
 
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
 
@@ -40,12 +40,14 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Inject
 	private FarmerApi farmerApi;
 
+	private InspectorApi inspectorApi;
+
 	@Inject
 	private InspectionService inspectionService;
 
 	@Inject
 	private SynchronizationService synchronizationService;
-	
+
 	@Inject
 	private SynchronizationDao synchronizationDao;
 
@@ -54,10 +56,18 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		super(dao);
 	}
 
-	@Override
-	public Inspection findById(Long id) {
-		Inspection inspection = super.findById(id);
-		return inspection;
+	private String getInspectorName(Inspection inspection) {
+		try {
+			if (inspection != null) {
+				Inspector inspector = inspectorApi.find(inspection.getInspectorId());
+				if (inspector == null)
+					return null;
+				return inspector.getFirstName();
+			}
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -70,7 +80,8 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
-		return new FarmersInspectionReport(farmer, sync.getVersion(), sync.getSubVersion(), inspection);
+		String inspectorName = getInspectorName(inspection);
+		return new FarmersInspectionReport(farmer, sync.getVersion(), sync.getSubVersion(), inspectorName, inspection);
 	}
 
 	@Override
@@ -80,17 +91,17 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 
 	@Override
 	public FarmersInspectionReport save(HttpServletRequest request, Inspection inspection)
-			throws JsonParseException, JsonMappingException, IOException, ApiException {
-		List<Inspection> inspections = new ArrayList<Inspection>();
+			throws IOException, ApiException {
+		List<Inspection> inspections = new ArrayList<>();
 		inspections.add(inspection);
 		return bulkUpload(request, inspections).get(0);
 	}
 
 	@Override
 	public List<FarmersInspectionReport> bulkUpload(HttpServletRequest request, List<Inspection> inspections)
-			throws JsonParseException, JsonMappingException, IOException, ApiException {
+			throws IOException, ApiException {
 
-		List<FarmersInspectionReport> farmersInspectionReports = new ArrayList<FarmersInspectionReport>();
+		List<FarmersInspectionReport> farmersInspectionReports = new ArrayList<>();
 		for (Inspection inspection : inspections) {
 
 			Long farmerId = inspection.getFarmerId();
@@ -117,7 +128,6 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				List<Synchronization> syncs = synchronizationService.getByPropertyWithCondtion("reportId", inspectionId,
 						"=", -1, -1);
 
-				
 				Synchronization synchronization = syncs.get(0);
 				version = synchronization.getVersion();
 				subVersion = synchronization.getSubVersion() + 1;
@@ -141,13 +151,14 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		Farmer farmer = farmerApi.find(farmerId);
 		List<Inspection> inspections = inspectorDao.getByPropertyWithCondtion("farmerId", farmer.getId(), "=", -1, -1);
 
-		List<FarmersInspectionReport> reports = new ArrayList<FarmersInspectionReport>();
+		List<FarmersInspectionReport> reports = new ArrayList<>();
 		for (Inspection inspection : inspections) {
 			Long inspectionId = inspection.getId();
 			Synchronization syncs = synchronizationService.findByPropertyWithCondtion("reportId", inspectionId, "=");
 
+			String inspectorName = getInspectorName(inspection);
 			FarmersInspectionReport report = new FarmersInspectionReport(farmer, syncs.getVersion(),
-					syncs.getSubVersion(), inspection);
+					syncs.getSubVersion(), inspectorName, inspection);
 			reports.add(report);
 		}
 		return reports;
@@ -163,7 +174,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public Collection<FarmersInspectionReport> getReportsForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, Long ccCode) {
 
-		List<Farmer> farmers = new ArrayList<Farmer>();
+		List<Farmer> farmers = new ArrayList<>();
 		try {
 			if (ccCode != -1) {
 				farmers = farmerApi.getFarmerForCollectionCenter(ccCode, limit, offset);
@@ -181,7 +192,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			throws ApiException {
 
 		Farmer farmer = farmerApi.find(farmerId);
-		List<Farmer> farmers = new ArrayList<Farmer>();
+		List<Farmer> farmers = new ArrayList<>();
 		farmers.add(farmer);
 		Collection<FarmersInspectionReport> reports = getLatestReportForFarmers(farmers, -1, -1);
 		return reports.iterator().next();
@@ -189,18 +200,18 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 
 	private Collection<FarmersInspectionReport> getLatestReportForFarmers(List<Farmer> farmers, Integer limit,
 			Integer offset) {
-		Map<Long, FarmersInspectionReport> reports = new HashMap<Long, FarmersInspectionReport>();
-		Set<Long> farmerIds = new HashSet<Long>();
+		Map<Long, FarmersInspectionReport> reports = new HashMap<>();
+		Set<Long> farmerIds = new HashSet<>();
 		for (Farmer farmer : farmers) {
 			Long id = farmer.getId();
 			farmerIds.add(id);
-			FarmersInspectionReport farmersLastReport = new FarmersInspectionReport(farmer, 0, 0, null);
+			FarmersInspectionReport farmersLastReport = new FarmersInspectionReport(farmer, 0, 0, null, null);
 			reports.put(id, farmersLastReport);
 		}
 
 		List<Synchronization> syncs = synchronizationDao.getSynchronizationForFarmers(limit, offset, farmerIds);
-		
-		for(Synchronization sync : syncs) {
+
+		for (Synchronization sync : syncs) {
 			Long farmerId = sync.getFarmerId();
 			FarmersInspectionReport farmersInspectionReport = reports.get(farmerId);
 			Inspection inspection = inspectorDao.findById(sync.getReportId());
@@ -208,7 +219,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			farmersInspectionReport.setVersion(syncs.get(0).getVersion());
 			farmersInspectionReport.setSubVersion(syncs.get(0).getSubVersion());
 		}
-		
+
 		return reports.values();
 	}
 
@@ -239,22 +250,21 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		Long inspectionId = syncEntry.getReportId();
 		Inspection inspection = inspectionService.findById(inspectionId);
 		Signature icsSign = icsSignRequest.getSignature();
-		if(icsSign.getDate() == null)
+		if (icsSign.getDate() == null)
 			icsSign.setDate(currentTime);
 		inspection.setIcsManager(icsSign);
 		inspection = update(inspection);
 
 		Farmer farmer = farmerApi.find(farmerId);
-		FarmersInspectionReport inspectionReport = new FarmersInspectionReport(farmer, version, subVersion, inspection);
-
-		return inspectionReport;
+		String inspectorName = getInspectorName(inspection);
+		return new FarmersInspectionReport(farmer, version, subVersion, inspectorName, inspection);
 	}
 
 	@Override
 	public List<FarmersInspectionReport> bulkReportsSignByICSManager(HttpServletRequest request,
 			List<ICSSignRequest> icsSignRequests) throws NumberFormatException, ApiException {
 
-		List<FarmersInspectionReport> inspections = new ArrayList<FarmersInspectionReport>();
+		List<FarmersInspectionReport> inspections = new ArrayList<>();
 		for (ICSSignRequest icsSignRequest : icsSignRequests) {
 			inspections.add(signByICSManager(request, icsSignRequest));
 		}
