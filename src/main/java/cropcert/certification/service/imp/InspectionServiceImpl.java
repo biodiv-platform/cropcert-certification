@@ -40,6 +40,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Inject
 	private FarmerApi farmerApi;
 
+	@Inject
 	private UserApi userApi;
 
 	@Inject
@@ -62,7 +63,9 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				User inspector = userApi.find(inspection.getInspectorId());
 				if (inspector == null)
 					return null;
-				return inspector.getFirstName();
+				String firstName = inspector.getFirstName() == null ? "" : inspector.getFirstName();
+				String lastName = inspector.getLastName() == null ? "" : inspector.getLastName();
+				return firstName + " " + lastName;
 			}
 		} catch (ApiException e) {
 			e.printStackTrace();
@@ -215,6 +218,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			Long farmerId = sync.getFarmerId();
 			FarmersInspectionReport farmersInspectionReport = reports.get(farmerId);
 			Inspection inspection = inspectorDao.findById(sync.getReportId());
+			farmersInspectionReport.setInspectorName(getInspectorName(inspection));
 			farmersInspectionReport.setInspection(inspection);
 			farmersInspectionReport.setVersion(syncs.get(0).getVersion());
 			farmersInspectionReport.setSubVersion(syncs.get(0).getSubVersion());
