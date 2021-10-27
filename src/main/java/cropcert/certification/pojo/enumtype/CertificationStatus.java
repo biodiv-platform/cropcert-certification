@@ -13,7 +13,9 @@ public enum CertificationStatus {
 	@XmlEnumValue("C2")
 	C2("C2"),
 	@XmlEnumValue("C3")
-	C3("C3");
+	C3("C3"),
+	@XmlEnumValue("CERTIFIED")
+	CERTIFIED("CERTIFIED");
 	
 	private String value;
 	
