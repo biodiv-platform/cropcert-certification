@@ -27,8 +27,10 @@ import cropcert.certification.service.InspectionService;
 import cropcert.certification.service.SynchronizationService;
 import cropcert.certification.util.UserUtil;
 import cropcert.user.ApiException;
+import cropcert.user.api.CollectionCenterApi;
 import cropcert.user.api.FarmerApi;
 import cropcert.user.api.UserApi;
+import cropcert.user.model.CollectionCenterShow;
 import cropcert.user.model.Farmer;
 import cropcert.user.model.User;
 
@@ -39,6 +41,9 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 
 	@Inject
 	private FarmerApi farmerApi;
+
+	@Inject
+	private CollectionCenterApi collectionCenterApi;
 
 	@Inject
 	private UserApi userApi;
@@ -171,6 +176,26 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public List<Inspection> getReportsForInspector(HttpServletRequest request, Integer limit, Integer offset,
 			Long inspectorId, Long farmerId) {
 		return inspectorDao.getReportsForInspector(limit, offset, inspectorId, farmerId);
+	}
+
+	@Override
+	public Collection<FarmersInspectionReport> getReportsForCooperative(HttpServletRequest request, Integer limit,
+			Integer offset, Long coCode) throws ApiException {
+		List<CollectionCenterShow> collectionCenters = collectionCenterApi.findAll_0(coCode);
+		StringBuilder ccCodes = new StringBuilder();
+
+		if (collectionCenters.isEmpty())
+			return new ArrayList<>();
+
+		ccCodes.append(collectionCenters.get(0).getId());
+		for (int i = 1; i < collectionCenters.size(); i++) {
+			ccCodes.append(",");
+			ccCodes.append(collectionCenters.get(i).getId());
+		}
+
+		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit,
+				offset);
+		return getLatestReportForFarmers(farmers, limit, offset);
 	}
 
 	@Override

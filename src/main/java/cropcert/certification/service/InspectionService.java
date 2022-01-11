@@ -43,4 +43,7 @@ public interface InspectionService {
 
 	public List<FarmersInspectionReport> bulkReportsSignByICSManager(HttpServletRequest request, List<ICSSignRequest> icsSignRequests) throws NumberFormatException, ApiException;
 
+	public Collection<FarmersInspectionReport> getReportsForCooperative(HttpServletRequest request, Integer limit,
+			Integer offset, Long ccCode) throws ApiException;
+
 }

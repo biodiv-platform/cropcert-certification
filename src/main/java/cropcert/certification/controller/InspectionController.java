@@ -45,6 +45,15 @@ public interface InspectionController {
 	@ApiOperation(value = "Get Inspection report by Id", response = FarmersInspectionReport.class)
 	public Response findById(@Context HttpServletRequest request, @PathParam("id") Long id);
 
+	@Path("all/coCode")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Get all the inspection report from collection center given by ccCode", response = FarmersInspectionReport.class, responseContainer = "List")
+	public Response getAllByCOCode(@Context HttpServletRequest request,
+			@DefaultValue("-1") @QueryParam("limit") Integer limit,
+			@DefaultValue("-1") @QueryParam("offset") Integer offset,
+			@DefaultValue("-1") @QueryParam("coCode") Long coCode);
+	
 	@Path("all/ccCode")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -112,4 +121,6 @@ public interface InspectionController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "Authorization", value = "Authorization token", required = true, dataType = "string", paramType = "header") })
 	public Response bulkReportsSignByICSManager(@Context HttpServletRequest request, @ApiParam(name = "ICSSignRequests") List<ICSSignRequest> icsSignRequest);
+
+
 }

@@ -34,6 +34,17 @@ public class InspectionControllerImpl implements InspectionController {
 					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
 		}
 	}
+	
+	@Override
+	public Response getAllByCOCode(HttpServletRequest request, Integer limit, Integer offset, Long coCode) {
+		try {
+			Collection<FarmersInspectionReport> reports = inspectionService.getReportsForCooperative(request, limit, offset, coCode);
+			return Response.ok().entity(reports).build();
+		} catch (Exception e) {
+			throw new WebApplicationException(
+					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
+		}
+	}
 
 	@Override
 	public Response getAllByCCCode(HttpServletRequest request, Integer limit, Integer offset, Long ccCode) {
