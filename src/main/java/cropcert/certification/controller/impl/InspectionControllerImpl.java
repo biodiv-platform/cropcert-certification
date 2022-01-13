@@ -36,9 +36,9 @@ public class InspectionControllerImpl implements InspectionController {
 	}
 	
 	@Override
-	public Response getAllByCOCode(HttpServletRequest request, Integer limit, Integer offset, Long coCode) {
+	public Response getAllByCOCode(HttpServletRequest request, Integer limit, Integer offset, String coCodes) {
 		try {
-			Collection<FarmersInspectionReport> reports = inspectionService.getReportsForCooperative(request, limit, offset, coCode);
+			Collection<FarmersInspectionReport> reports = inspectionService.getReportsForCooperative(request, limit, offset, coCodes);
 			return Response.ok().entity(reports).build();
 		} catch (Exception e) {
 			throw new WebApplicationException(

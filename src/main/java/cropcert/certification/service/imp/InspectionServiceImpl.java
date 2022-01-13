@@ -180,8 +180,14 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 
 	@Override
 	public Collection<FarmersInspectionReport> getReportsForCooperative(HttpServletRequest request, Integer limit,
-			Integer offset, Long coCode) throws ApiException {
-		List<CollectionCenterShow> collectionCenters = collectionCenterApi.findAll_0(coCode);
+			Integer offset, String coCodes) throws ApiException {
+		
+		List<CollectionCenterShow> collectionCenters = new ArrayList<>();
+		for (String coCode : coCodes.split(",")) {
+			List<CollectionCenterShow> collectionCenter = collectionCenterApi.findAll_0(Long.parseLong(coCode));
+			collectionCenters.addAll(collectionCenter);
+
+		}
 		StringBuilder ccCodes = new StringBuilder();
 
 		if (collectionCenters.isEmpty())
@@ -193,8 +199,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			ccCodes.append(collectionCenters.get(i).getId());
 		}
 
-		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit,
-				offset);
+		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit, offset);
 		return getLatestReportForFarmers(farmers, limit, offset);
 	}
 

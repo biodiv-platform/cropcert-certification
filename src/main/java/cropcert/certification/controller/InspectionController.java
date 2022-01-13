@@ -52,7 +52,7 @@ public interface InspectionController {
 	public Response getAllByCOCode(@Context HttpServletRequest request,
 			@DefaultValue("-1") @QueryParam("limit") Integer limit,
 			@DefaultValue("-1") @QueryParam("offset") Integer offset,
-			@DefaultValue("-1") @QueryParam("coCode") Long coCode);
+			@DefaultValue("-1") @QueryParam("coCode") String coCode);
 	
 	@Path("all/ccCode")
 	@GET
