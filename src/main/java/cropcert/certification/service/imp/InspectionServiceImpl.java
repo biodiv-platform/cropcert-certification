@@ -193,10 +193,10 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		if (collectionCenters.isEmpty())
 			return new ArrayList<>();
 
-		ccCodes.append(collectionCenters.get(0).getId());
+		ccCodes.append(collectionCenters.get(0).getCode());
 		for (int i = 1; i < collectionCenters.size(); i++) {
 			ccCodes.append(",");
-			ccCodes.append(collectionCenters.get(i).getId());
+			ccCodes.append(collectionCenters.get(i).getCode());
 		}
 
 		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit, offset);
