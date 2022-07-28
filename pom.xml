@@ -31,18 +31,23 @@
 		<srcDir>src/main/webapp</srcDir>
 		<base-path>/certification/api</base-path>
 		<location>cropcert.certification</location>
+
+		<!-- Sonar Cloud -->
+		<sonar.projectKey>strandls_cropcert-certification</sonar.projectKey>
+		<sonar.organization>strandls</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<distributionManagement>
 		<repository>
 			<id>central</id>
 			<name>jfrog-releases</name>
-			<url>http://venus.strandls.com/artifactory/libs-release-local</url>
+			<url>https://devartifactory.indiabiodiversity.org/libs-release</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>jfrog-snapshots</name>
-			<url>http://venus.strandls.com/artifactory/libs-snapshot-local</url>
+			<url>https://devartifactory.indiabiodiversity.org/libs-snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
 
