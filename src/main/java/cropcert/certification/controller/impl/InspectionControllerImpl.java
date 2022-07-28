@@ -8,7 +8,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import cropcert.certification.controller.InspectionController;
 import cropcert.certification.filter.Permissions;

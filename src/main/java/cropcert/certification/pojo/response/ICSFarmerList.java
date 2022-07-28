@@ -3,13 +3,11 @@ package cropcert.certification.pojo.response;
 import java.sql.Timestamp;
 
 import cropcert.certification.pojo.Synchronization;
-import cropcert.user.model.Farmer;
+import cropcert.entities.model.Farmer;
 
 public class ICSFarmerList {
 
 	private Long farmerId;
-	private String farmerFirstName;
-	private String farmerLastName;
 
 	private Long collectionCenterId;
 	private String collectionCenterName;
@@ -22,7 +20,7 @@ public class ICSFarmerList {
 	private Integer subVersion;
 	private Boolean isReportFinalized;
 	private Timestamp lastUpdated;
-	
+
 	public ICSFarmerList() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -30,9 +28,7 @@ public class ICSFarmerList {
 
 	public ICSFarmerList(Farmer farmer, Synchronization synchronization) {
 		super();
-		this.farmerId = farmer.getId();
-		this.farmerFirstName = farmer.getFirstName();
-		this.farmerLastName = farmer.getLastName();
+		this.farmerId = farmer.getUserId();
 		this.cooperativeName = farmer.getCoName();
 		this.collectionCenterId = farmer.getCcCode();
 		this.collectionCenterName = farmer.getCcName();
@@ -44,13 +40,10 @@ public class ICSFarmerList {
 		this.lastUpdated = synchronization.getLastUpdated();
 	}
 
-	public ICSFarmerList(Long farmerId, String farmerFirstName, String farmerLastName, Long collectionCenterId,
-			String collectionCenterName, String cooperativeName, Long reportId, Integer version, Integer subVersion,
-			Boolean isReportFinalized, Timestamp lastUpdated) {
+	public ICSFarmerList(Long farmerId, Long collectionCenterId, String collectionCenterName, String cooperativeName,
+			Long reportId, Integer version, Integer subVersion, Boolean isReportFinalized, Timestamp lastUpdated) {
 		super();
 		this.farmerId = farmerId;
-		this.farmerFirstName = farmerFirstName;
-		this.farmerLastName = farmerLastName;
 		this.collectionCenterId = collectionCenterId;
 		this.collectionCenterName = collectionCenterName;
 		this.cooperativeName = cooperativeName;
@@ -67,22 +60,6 @@ public class ICSFarmerList {
 
 	public void setFarmerId(Long farmerId) {
 		this.farmerId = farmerId;
-	}
-
-	public String getFarmerFirstName() {
-		return farmerFirstName;
-	}
-
-	public void setFarmerFirstName(String farmerFirstName) {
-		this.farmerFirstName = farmerFirstName;
-	}
-
-	public String getFarmerLastName() {
-		return farmerLastName;
-	}
-
-	public void setFarmerLastName(String farmerLastName) {
-		this.farmerLastName = farmerLastName;
 	}
 
 	public Long getCollectionCenterId() {
@@ -116,19 +93,19 @@ public class ICSFarmerList {
 	public void setReportId(Long reportId) {
 		this.reportId = reportId;
 	}
-	
+
 	public Long getPrevReportId() {
 		return prevReportId;
 	}
-	
+
 	public void setPrevReportId(Long prevReportId) {
 		this.prevReportId = prevReportId;
 	}
-	
+
 	public Long getLastApprovedReportId() {
 		return lastApprovedReportId;
 	}
-	
+
 	public void setLastApprovedReportId(Long lastApprovedReportId) {
 		this.lastApprovedReportId = lastApprovedReportId;
 	}

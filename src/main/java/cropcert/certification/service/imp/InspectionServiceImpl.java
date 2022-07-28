@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.inject.Inject;
+import com.strandls.user.controller.UserServiceApi;
+import com.strandls.user.pojo.User;
 
 import cropcert.certification.dao.InspectionDao;
 import cropcert.certification.dao.SynchronizationDao;
@@ -26,13 +28,11 @@ import cropcert.certification.service.AbstractService;
 import cropcert.certification.service.InspectionService;
 import cropcert.certification.service.SynchronizationService;
 import cropcert.certification.util.UserUtil;
-import cropcert.user.ApiException;
-import cropcert.user.api.CollectionCenterApi;
-import cropcert.user.api.FarmerApi;
-import cropcert.user.api.UserApi;
-import cropcert.user.model.CollectionCenterShow;
-import cropcert.user.model.Farmer;
-import cropcert.user.model.User;
+import cropcert.entities.ApiException;
+import cropcert.entities.api.CollectionCenterApi;
+import cropcert.entities.api.FarmerApi;
+import cropcert.entities.model.CollectionCenterShow;
+import cropcert.entities.model.Farmer;
 
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
 
@@ -46,7 +46,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	private CollectionCenterApi collectionCenterApi;
 
 	@Inject
-	private UserApi userApi;
+	private UserServiceApi userServiceApi;
 
 	@Inject
 	private InspectionService inspectionService;
@@ -65,14 +65,12 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	private String getInspectorName(Inspection inspection) {
 		try {
 			if (inspection != null) {
-				User inspector = userApi.find(inspection.getInspectorId());
+				User inspector = userServiceApi.getUser(inspection.getInspectorId().toString());
 				if (inspector == null)
 					return null;
-				String firstName = inspector.getFirstName() == null ? "" : inspector.getFirstName();
-				String lastName = inspector.getLastName() == null ? "" : inspector.getLastName();
-				return firstName + " " + lastName;
+				return inspector.getName();
 			}
-		} catch (ApiException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -157,7 +155,8 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public List<FarmersInspectionReport> getAllReportsOfFarmer(HttpServletRequest request, Long farmerId)
 			throws ApiException {
 		Farmer farmer = farmerApi.find(farmerId);
-		List<Inspection> inspections = inspectorDao.getByPropertyWithCondtion("farmerId", farmer.getId(), "=", -1, -1);
+		List<Inspection> inspections = inspectorDao.getByPropertyWithCondtion("farmerId", farmer.getUserId(), "=", -1,
+				-1);
 
 		List<FarmersInspectionReport> reports = new ArrayList<>();
 		for (Inspection inspection : inspections) {
@@ -181,7 +180,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Override
 	public Collection<FarmersInspectionReport> getReportsForCooperative(HttpServletRequest request, Integer limit,
 			Integer offset, String coCodes) throws ApiException {
-		
+
 		List<CollectionCenterShow> collectionCenters = new ArrayList<>();
 		for (String coCode : coCodes.split(",")) {
 			List<CollectionCenterShow> collectionCenter = collectionCenterApi.findAll_0(Long.parseLong(coCode));
@@ -236,7 +235,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		Map<Long, FarmersInspectionReport> reports = new HashMap<>();
 		Set<Long> farmerIds = new HashSet<>();
 		for (Farmer farmer : farmers) {
-			Long id = farmer.getId();
+			Long id = farmer.getUserId();
 			farmerIds.add(id);
 			FarmersInspectionReport farmersLastReport = new FarmersInspectionReport(farmer, 0, 0, null, null);
 			reports.put(id, farmersLastReport);

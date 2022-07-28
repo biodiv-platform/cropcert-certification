@@ -14,11 +14,11 @@ import org.hibernate.Transaction;
 
 public abstract class AbstractDao<T, K extends Serializable> {
 
-
 	protected SessionFactory sessionFactory;
-	
+
 	protected Class<? extends T> daoType;
 
+	@SuppressWarnings("unchecked")
 	protected AbstractDao(SessionFactory sessionFactory) {
 		daoType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		this.sessionFactory = sessionFactory;
@@ -30,9 +30,9 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		try {
 			tx = session.beginTransaction();
 			session.save(entity);
-			tx.commit();			
+			tx.commit();
 		} catch (Exception e) {
-			if(tx!=null)
+			if (tx != null)
 				tx.rollback();
 			throw e;
 		} finally {
@@ -47,9 +47,9 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		try {
 			tx = session.beginTransaction();
 			session.update(entity);
-			tx.commit();			
+			tx.commit();
 		} catch (Exception e) {
-			if(tx!=null)
+			if (tx != null)
 				tx.rollback();
 			throw e;
 		} finally {
@@ -64,9 +64,9 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		try {
 			tx = session.beginTransaction();
 			session.delete(entity);
-			tx.commit();			
+			tx.commit();
 		} catch (Exception e) {
-			if(tx!=null)
+			if (tx != null)
 				tx.rollback();
 			throw e;
 		} finally {
@@ -77,58 +77,57 @@ public abstract class AbstractDao<T, K extends Serializable> {
 
 	public abstract T findById(K id);
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll() {
 		Session session = sessionFactory.openSession();
 		Criteria criteria = session.createCriteria(daoType);
 		List<T> entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 		return entities;
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll(int limit, int offset) {
 		Session session = sessionFactory.openSession();
-		Criteria criteria = session.createCriteria(daoType)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		List<T> entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
 		return entities;
 	}
-	
-	//TODO:improve this to do dynamic finder on any property
+
+	// TODO:improve this to do dynamic finder on any property
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public T findByPropertyWithCondition(String property, Object value, String condition) {
-		String queryStr = "" +
-			    "from "+daoType.getSimpleName()+" t " +
-			    "where t."+property+" "+condition+" :value" ;
+		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
+				+ " :value";
 		Session session = sessionFactory.openSession();
+
 		org.hibernate.query.Query query = session.createQuery(queryStr);
 		query.setParameter("value", value);
-		
+
 		T entity = null;
 		try {
 			entity = (T) query.getSingleResult();
-		} catch(NoResultException e) {
+		} catch (NoResultException e) {
 			throw e;
 		}
 		session.close();
 		return entity;
 
 	}
-	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<T> getByPropertyWithCondtion(String property, Object value, String condition, int limit, int offset) {
-		String queryStr = "" +
-			    "from "+daoType.getSimpleName()+" t " +
-			    "where t."+property+" "+condition+" :value" +
-			    " order by id";
+		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
+				+ " :value" + " order by id";
 		Session session = sessionFactory.openSession();
 		org.hibernate.query.Query query = session.createQuery(queryStr);
 		query.setParameter("value", value);
 
 		List<T> resultList = new ArrayList<T>();
 		try {
-			if(limit>0 && offset >= 0)
+			if (limit > 0 && offset >= 0)
 				query = query.setFirstResult(offset).setMaxResults(limit);
 			resultList = query.getResultList();
-			
+
 		} catch (NoResultException e) {
 			throw e;
 		}

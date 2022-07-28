@@ -1,0 +1,14 @@
+{
+	"modelPackage": "cropcert.certification.pojo",
+	"apiPackage": "cropcert.certification.controller",
+	"invokerPackage": "cropcert.certification",
+	"groupId": "cropcert",
+	"artifactId": "certification-client",
+	"artifactVersion": "1.0.0",
+	"fullJavaUtil": true,
+	"dateLibrary": "legacy",
+	"library": "jersey2",
+	"developerName": "Vishnu Prasath",
+	"developerEmail": "vishnu.prasath@strandls.com",
+	"java8": true
+}

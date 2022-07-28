@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import cropcert.certification.pojo.Synchronization;
 
@@ -35,6 +35,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		return entity;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Synchronization getCurrentPartialReport(Long inspectorId, Long farmerId) {
 
 		String queryStr = "from " + daoType.getSimpleName() + " t "
@@ -60,6 +61,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		return resultList.get(0);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Synchronization> getSynchronizationForFarmers(Integer limit, Integer offset,
 			Set<Long> farmerIds) {
 		String farmerIdsString = "(";
@@ -87,6 +89,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		return resultList;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Synchronization getReport(Integer version, Integer subVersion, Long farmerId) {
 
 		String queryStr = " from " + daoType.getSimpleName() + " t "
@@ -107,6 +110,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Synchronization> getRecentSubversionEntry(Integer version, Long farmerId) {
 
 		String queryStr = "select * from " + daoType.getSimpleName() + " t " + " where farmer_id = :farmerId "

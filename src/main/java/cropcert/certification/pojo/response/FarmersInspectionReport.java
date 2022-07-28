@@ -1,22 +1,11 @@
 package cropcert.certification.pojo.response;
 
-import java.sql.Timestamp;
-
 import cropcert.certification.pojo.Inspection;
-import cropcert.user.model.Farmer;
+import cropcert.entities.model.Farmer;
 
 public class FarmersInspectionReport {
 
 	private Long id;
-	private String userName;
-	private String firstName;
-	private String lastName;
-	private Timestamp dateOfBirth;
-	private String gender;
-	private String cellNumber;
-	private String email;
-	private String village;
-	private String subCountry;
 	private String membershipId;
 	private Integer numCoffeePlots;
 	private Integer numCoffeeTrees;
@@ -41,18 +30,7 @@ public class FarmersInspectionReport {
 
 	public FarmersInspectionReport(Farmer farmer, Integer version, Integer subVersion, String inspectorName,
 			Inspection inspection) {
-		this.id = farmer.getId();
-		this.userName = farmer.getUserName();
-		this.firstName = farmer.getFirstName();
-		this.lastName = farmer.getLastName();
-		this.dateOfBirth = null;
-		if (farmer.getDateOfBirth() != null)
-			this.dateOfBirth = new Timestamp(farmer.getDateOfBirth().getTime());
-		this.gender = farmer.getGender();
-		this.cellNumber = farmer.getCellNumber();
-		this.email = farmer.getEmail();
-		this.village = farmer.getVillage();
-		this.subCountry = farmer.getSubCountry();
+		this.id = farmer.getUserId();
 		this.membershipId = farmer.getMembershipId();
 		this.numCoffeePlots = farmer.getNumCoffeePlots();
 		this.numCoffeeTrees = farmer.getNumCoffeeTrees();
@@ -79,78 +57,6 @@ public class FarmersInspectionReport {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public Timestamp getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(Timestamp dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public String getCellNumber() {
-		return cellNumber;
-	}
-
-	public void setCellNumber(String cellNumber) {
-		this.cellNumber = cellNumber;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getVillage() {
-		return village;
-	}
-
-	public void setVillage(String village) {
-		this.village = village;
-	}
-
-	public String getSubCountry() {
-		return subCountry;
-	}
-
-	public void setSubCountry(String subCountry) {
-		this.subCountry = subCountry;
 	}
 
 	public String getMembershipId() {
