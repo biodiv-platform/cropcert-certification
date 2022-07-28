@@ -11,20 +11,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import cropcert.certification.pojo.enumtype.HusbandaryType;
 
+import cropcert.certification.pojo.enumtype.HusbandaryType;
 import io.swagger.annotations.ApiModel;
 
 @Entity
 @Table(name = "animal")
-@XmlRootElement
 @JsonIgnoreProperties
 @ApiModel("Animal")
-public class Animal implements Serializable{
+public class Animal implements Serializable {
 
 	/**
 	 * 
@@ -36,7 +34,7 @@ public class Animal implements Serializable{
 	@SequenceGenerator(name = "animal_id_generator", sequenceName = "animal_id_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
-	
+
 	@Column(name = "type")
 	private String type;
 	@Column(name = "number")

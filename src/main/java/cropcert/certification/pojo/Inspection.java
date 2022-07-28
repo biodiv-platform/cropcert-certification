@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,7 +30,6 @@ import io.swagger.annotations.ApiModel;
 
 @Entity
 @Table(name = "inspection")
-@XmlRootElement
 @JsonIgnoreProperties
 @ApiModel("Inspection")
 public class Inspection implements Serializable {

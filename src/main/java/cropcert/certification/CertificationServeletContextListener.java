@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import javax.inject.Inject;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
@@ -74,9 +76,12 @@ public class CertificationServeletContextListener extends GuiceServletContextLis
 				bind(ObjectMapper.class).toInstance(objectMapper);
 				bind(SessionFactory.class).toInstance(sessionFactory);
 
+				
 				bind(UserApi.class).in(Scopes.SINGLETON);
-				bind(ServletContainer.class).in(Scopes.SINGLETON);
+				
 				bind(UserServiceApi.class).in(Scopes.SINGLETON);
+				
+				bind(ServletContainer.class).in(Scopes.SINGLETON);
 
 				Map<String, String> props = new HashMap<String, String>();
 				props.put("javax.ws.rs.Application", ApplicationConfig.class.getName());
