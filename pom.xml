@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cropcert</groupId>
@@ -12,13 +14,15 @@
 	<name>Cropcert Certification</name>
 
 	<properties>
+
 		<!-- Build plugins -->
 		<java.version>1.8</java.version>
 		<mvn-compiler-plugin.version>3.8.0</mvn-compiler-plugin.version>
 		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
 		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
 		<replacer.version>1.5.3</replacer.version>
-		<swagger-maven-plugin.version>2.1.0</swagger-maven-plugin.version>
+		<swagger-maven-plugin.version>3.1.1</swagger-maven-plugin.version>
+
 		<exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
 		<openapi-generator-cli.version>4.0.3</openapi-generator-cli.version>
 		<!-- end Build plugins -->
@@ -36,8 +40,11 @@
 
 		<swagger.version>1.5.22</swagger.version>
 		<swagger-ui.version>3.23.5</swagger-ui.version>
+
+		<!-- Project property -->
 		<war-name>certification</war-name>
 		<srcDir>src/main/webapp</srcDir>
+		<base-path>/certification/api</base-path>
 		<location>cropcert.certification</location>
 
 		<!-- Sonar Cloud -->
@@ -45,6 +52,8 @@
 		<sonar.organization>strandls</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
+
+
 
 	<distributionManagement>
 		<repository>
@@ -75,6 +84,7 @@
 			<url>https://devartifactory.indiabiodiversity.org/libs-snapshot</url>
 		</repository>
 	</repositories>
+
 
 	<dependencies>
 		<dependency>
@@ -204,16 +214,9 @@
 			<artifactId>swagger-jersey2-jaxrs</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
-		<dependency>
-			<groupId>com.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>5.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.strandls.biodiv</groupId>
-			<artifactId>user-client</artifactId>
+		 <dependency>
+			<groupId>cropcert</groupId>
+			<artifactId>entities-client</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
@@ -221,14 +224,19 @@
 			<artifactId>authentication-utility</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
 		<dependency>
-			<groupId>cropcert</groupId>
-			<artifactId>entities-client</artifactId>
+			<groupId>com.strandls.biodiv</groupId>
+			<artifactId>user-client</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.3</version>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<finalName>certification</finalName>
 		<resources>
@@ -244,8 +252,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${mvn-compiler-plugin.version}</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
@@ -318,7 +326,7 @@
 			<plugin>
 				<groupId>com.github.kongchen</groupId>
 				<artifactId>swagger-maven-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>${swagger-maven-plugin.version}</version>
 				<configuration>
 					<apiSources>
 						<apiSource>
@@ -326,9 +334,9 @@
 							<locations>
 								${location}
 							</locations>
-							<schemes>http</schemes>
+							<schemes>http, https</schemes>
 							<host>localhost:8080</host>
-							<basePath>/${war-name}/api</basePath>
+							<basePath>${base-path}</basePath>
 							<info>
 								<title>Swagger file generation</title>
 								<version>v1</version>
