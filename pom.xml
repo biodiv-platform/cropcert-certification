@@ -26,7 +26,6 @@
 		<hibernate-core.version>5.4.1.Final</hibernate-core.version>
 		<org.pac4j.version>3.7.0</org.pac4j.version>
 
-		<!-- Project property -->
 		<war-name>certification</war-name>
 		<srcDir>src/main/webapp</srcDir>
 		<base-path>/certification/api</base-path>
