@@ -6,6 +6,9 @@ import cropcert.entities.model.UserFarmerDetail;
 public class FarmersInspectionReport {
 
 	private Long id;
+	private String name;
+	private String username;
+	private String email;
 	private String membershipId;
 	private Integer numCoffeePlots;
 	private Integer numCoffeeTrees;
@@ -31,6 +34,9 @@ public class FarmersInspectionReport {
 	public FarmersInspectionReport(UserFarmerDetail farmer, Integer version, Integer subVersion, String inspectorName,
 			Inspection inspection) {
 		this.id = farmer.getUserId();
+		this.name = farmer.getName();
+		this.username = farmer.getUsername();
+		this.email = farmer.getEmail();
 		this.membershipId = farmer.getMembershipId();
 		this.numCoffeePlots = farmer.getNumCoffeePlots();
 		this.numCoffeeTrees = farmer.getNumCoffeeTrees();
@@ -177,5 +183,29 @@ public class FarmersInspectionReport {
 
 	public void setInspection(Inspection inspection) {
 		this.inspection = inspection;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
