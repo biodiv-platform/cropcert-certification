@@ -21,6 +21,7 @@ import cropcert.certification.service.SynchronizationService;
 import cropcert.entities.ApiException;
 import cropcert.entities.api.FarmerApi;
 import cropcert.entities.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class SynchronizationServiceImpl extends AbstractService<Synchronization> implements SynchronizationService {
 
@@ -42,10 +43,10 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 	public List<ICSFarmerList> getSynchronizationForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, String ccCodes, Boolean isPendingOnly, String firstName) throws ApiException {
 
-		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit, offset);
+		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit, offset);
 
-		Map<Long, Farmer> farmerIdToFarmer = new HashMap<Long, Farmer>();
-		for (Farmer farmer : farmers) {
+		Map<Long, UserFarmerDetail> farmerIdToFarmer = new HashMap<Long, UserFarmerDetail>();
+		for (UserFarmerDetail farmer : farmers) {
 			Long id = farmer.getUserId();
 			farmerIdToFarmer.put(id, farmer);
 		}
@@ -57,7 +58,7 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 		for (Synchronization synchronization : synchronizations) {
 			if (isPendingOnly && synchronization.getIsReportFinalized())
 				continue;
-			Farmer farmer = farmerIdToFarmer.get(synchronization.getFarmerId());
+			UserFarmerDetail farmer = farmerIdToFarmer.get(synchronization.getFarmerId());
 			Integer version = synchronization.getVersion();
 			Integer subVersion = synchronization.getSubVersion();
 			Long farmerId = synchronization.getFarmerId();

@@ -32,7 +32,7 @@ import cropcert.entities.ApiException;
 import cropcert.entities.api.CollectionCenterApi;
 import cropcert.entities.api.FarmerApi;
 import cropcert.entities.model.CollectionCenterShow;
-import cropcert.entities.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
 
@@ -80,7 +80,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public FarmersInspectionReport getFarmerInspectionReport(Long id) {
 		Inspection inspection = super.findById(id);
 		Synchronization sync = synchronizationService.findByPropertyWithCondtion("reportId", inspection.getId(), "=");
-		Farmer farmer = null;
+		UserFarmerDetail farmer = null;
 		try {
 			farmer = farmerApi.find(inspection.getFarmerId());
 		} catch (ApiException e) {
@@ -154,7 +154,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Override
 	public List<FarmersInspectionReport> getAllReportsOfFarmer(HttpServletRequest request, Long farmerId)
 			throws ApiException {
-		Farmer farmer = farmerApi.find(farmerId);
+		UserFarmerDetail farmer = farmerApi.find(farmerId);
 		List<Inspection> inspections = inspectorDao.getByPropertyWithCondtion("farmerId", farmer.getUserId(), "=", -1,
 				-1);
 
@@ -198,7 +198,8 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			ccCodes.append(collectionCenters.get(i).getCode());
 		}
 
-		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit, offset);
+		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes.toString(), null, limit,
+				offset);
 		return getLatestReportForFarmers(farmers, limit, offset);
 	}
 
@@ -206,7 +207,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public Collection<FarmersInspectionReport> getReportsForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, Long ccCode) {
 
-		List<Farmer> farmers = new ArrayList<>();
+		List<UserFarmerDetail> farmers = new ArrayList<>();
 		try {
 			if (ccCode != -1) {
 				farmers = farmerApi.getFarmerForCollectionCenter(ccCode, limit, offset);
@@ -223,18 +224,18 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	public FarmersInspectionReport getLatestFarmerReport(HttpServletRequest request, Long farmerId)
 			throws ApiException {
 
-		Farmer farmer = farmerApi.find(farmerId);
-		List<Farmer> farmers = new ArrayList<>();
+		UserFarmerDetail farmer = farmerApi.find(farmerId);
+		List<UserFarmerDetail> farmers = new ArrayList<>();
 		farmers.add(farmer);
 		Collection<FarmersInspectionReport> reports = getLatestReportForFarmers(farmers, -1, -1);
 		return reports.iterator().next();
 	}
 
-	private Collection<FarmersInspectionReport> getLatestReportForFarmers(List<Farmer> farmers, Integer limit,
+	private Collection<FarmersInspectionReport> getLatestReportForFarmers(List<UserFarmerDetail> farmers, Integer limit,
 			Integer offset) {
 		Map<Long, FarmersInspectionReport> reports = new HashMap<>();
 		Set<Long> farmerIds = new HashSet<>();
-		for (Farmer farmer : farmers) {
+		for (UserFarmerDetail farmer : farmers) {
 			Long id = farmer.getUserId();
 			farmerIds.add(id);
 			FarmersInspectionReport farmersLastReport = new FarmersInspectionReport(farmer, 0, 0, null, null);
@@ -288,7 +289,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		inspection.setIcsManager(icsSign);
 		inspection = update(inspection);
 
-		Farmer farmer = farmerApi.find(farmerId);
+		UserFarmerDetail farmer = farmerApi.find(farmerId);
 		String inspectorName = getInspectorName(inspection);
 		return new FarmersInspectionReport(farmer, version, subVersion, inspectorName, inspection);
 	}

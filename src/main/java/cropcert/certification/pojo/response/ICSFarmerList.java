@@ -3,7 +3,7 @@ package cropcert.certification.pojo.response;
 import java.sql.Timestamp;
 
 import cropcert.certification.pojo.Synchronization;
-import cropcert.entities.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class ICSFarmerList {
 
@@ -26,7 +26,7 @@ public class ICSFarmerList {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ICSFarmerList(Farmer farmer, Synchronization synchronization) {
+	public ICSFarmerList(UserFarmerDetail farmer, Synchronization synchronization) {
 		super();
 		this.farmerId = farmer.getUserId();
 		this.cooperativeName = farmer.getCoName();

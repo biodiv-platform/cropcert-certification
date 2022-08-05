@@ -1,7 +1,7 @@
 package cropcert.certification.pojo.response;
 
 import cropcert.certification.pojo.Inspection;
-import cropcert.entities.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class FarmersInspectionReport {
 
@@ -28,7 +28,7 @@ public class FarmersInspectionReport {
 		super();
 	}
 
-	public FarmersInspectionReport(Farmer farmer, Integer version, Integer subVersion, String inspectorName,
+	public FarmersInspectionReport(UserFarmerDetail farmer, Integer version, Integer subVersion, String inspectorName,
 			Inspection inspection) {
 		this.id = farmer.getUserId();
 		this.membershipId = farmer.getMembershipId();
