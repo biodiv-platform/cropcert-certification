@@ -9,6 +9,8 @@ public class FarmersInspectionReport {
 	private String name;
 	private String username;
 	private String email;
+	private String sexType;
+	private String mobileNumber;
 	private String membershipId;
 	private Integer numCoffeePlots;
 	private Integer numCoffeeTrees;
@@ -48,6 +50,9 @@ public class FarmersInspectionReport {
 		this.coName = farmer.getCoName();
 		this.unionName = farmer.getUnionName();
 		this.fieldCoOrdinator = farmer.getFieldCoOrdinator();
+
+		this.sexType = farmer.getSexType();
+		this.mobileNumber = farmer.getMobileNumber();
 
 		this.version = version;
 		this.subVersion = subVersion;
@@ -207,5 +212,21 @@ public class FarmersInspectionReport {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSexType() {
+		return sexType;
+	}
+
+	public void setSexType(String sexType) {
+		this.sexType = sexType;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 }

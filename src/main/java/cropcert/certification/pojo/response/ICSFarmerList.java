@@ -9,6 +9,8 @@ public class ICSFarmerList {
 
 	private Long farmerId;
 
+	private String name;
+
 	private Long collectionCenterId;
 	private String collectionCenterName;
 	private String cooperativeName;
@@ -29,6 +31,7 @@ public class ICSFarmerList {
 	public ICSFarmerList(UserFarmerDetail farmer, Synchronization synchronization) {
 		super();
 		this.farmerId = farmer.getUserId();
+		this.name = farmer.getName();
 		this.cooperativeName = farmer.getCoName();
 		this.collectionCenterId = farmer.getCcCode();
 		this.collectionCenterName = farmer.getCcName();
@@ -40,10 +43,12 @@ public class ICSFarmerList {
 		this.lastUpdated = synchronization.getLastUpdated();
 	}
 
-	public ICSFarmerList(Long farmerId, Long collectionCenterId, String collectionCenterName, String cooperativeName,
-			Long reportId, Integer version, Integer subVersion, Boolean isReportFinalized, Timestamp lastUpdated) {
+	public ICSFarmerList(Long farmerId, String name, Long collectionCenterId, String collectionCenterName,
+			String cooperativeName, Long reportId, Integer version, Integer subVersion, Boolean isReportFinalized,
+			Timestamp lastUpdated) {
 		super();
 		this.farmerId = farmerId;
+		this.name = name;
 		this.collectionCenterId = collectionCenterId;
 		this.collectionCenterName = collectionCenterName;
 		this.cooperativeName = cooperativeName;
@@ -140,5 +145,13 @@ public class ICSFarmerList {
 
 	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
