@@ -42,7 +42,7 @@
 		<swagger-ui.version>3.23.5</swagger-ui.version>
 
 		<!-- Project property -->
-		<war-name>certification</war-name>
+		<war-name>certification-api</war-name>
 		<srcDir>src/main/webapp</srcDir>
 		<base-path>/certification/api</base-path>
 		<location>cropcert.certification</location>
