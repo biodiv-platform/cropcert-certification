@@ -42,9 +42,8 @@
 		<swagger-ui.version>3.23.5</swagger-ui.version>
 
 		<!-- Project property -->
-		<war-name>certification-api</war-name>
+		<warName>certification-api</warName>
 		<srcDir>src/main/webapp</srcDir>
-		<base-path>/certification/api</base-path>
 		<location>cropcert.certification</location>
 
 		<!-- Sonar Cloud -->
@@ -294,7 +293,7 @@
 							<targetPath>swagger-ui</targetPath>
 						</resource>
 					</webResources>
-					<warName>${war-name}</warName>
+					<warName>${warName}</warName>
 					<warSourceDirectory>${srcDir}</warSourceDirectory>
 				</configuration>
 			</plugin>
@@ -336,7 +335,7 @@
 							</locations>
 							<schemes>http, https</schemes>
 							<host>localhost:8080</host>
-							<basePath>${base-path}</basePath>
+							<basePath>/${warName}/api</basePath>
 							<info>
 								<title>Swagger file generation</title>
 								<version>v1</version>
