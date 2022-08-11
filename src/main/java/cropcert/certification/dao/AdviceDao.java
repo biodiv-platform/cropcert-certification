@@ -3,7 +3,7 @@ package cropcert.certification.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import cropcert.certification.pojo.Advice;
 
 public class AdviceDao extends AbstractDao<Advice, Long>{

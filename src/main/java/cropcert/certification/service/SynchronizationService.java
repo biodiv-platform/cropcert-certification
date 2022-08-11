@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import cropcert.certification.pojo.Synchronization;
 import cropcert.certification.pojo.response.ICSFarmerList;
-import cropcert.user.ApiException;
+import cropcert.entities.ApiException;
 
 public interface SynchronizationService {
 

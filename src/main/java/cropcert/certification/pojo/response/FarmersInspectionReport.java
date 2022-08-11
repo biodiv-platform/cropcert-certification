@@ -1,22 +1,16 @@
 package cropcert.certification.pojo.response;
 
-import java.sql.Timestamp;
-
 import cropcert.certification.pojo.Inspection;
-import cropcert.user.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class FarmersInspectionReport {
 
 	private Long id;
-	private String userName;
-	private String firstName;
-	private String lastName;
-	private Timestamp dateOfBirth;
-	private String gender;
-	private String cellNumber;
+	private String name;
+	private String username;
 	private String email;
-	private String village;
-	private String subCountry;
+	private String sexType;
+	private String mobileNumber;
 	private String membershipId;
 	private Integer numCoffeePlots;
 	private Integer numCoffeeTrees;
@@ -39,20 +33,12 @@ public class FarmersInspectionReport {
 		super();
 	}
 
-	public FarmersInspectionReport(Farmer farmer, Integer version, Integer subVersion, String inspectorName,
+	public FarmersInspectionReport(UserFarmerDetail farmer, Integer version, Integer subVersion, String inspectorName,
 			Inspection inspection) {
-		this.id = farmer.getId();
-		this.userName = farmer.getUserName();
-		this.firstName = farmer.getFirstName();
-		this.lastName = farmer.getLastName();
-		this.dateOfBirth = null;
-		if (farmer.getDateOfBirth() != null)
-			this.dateOfBirth = new Timestamp(farmer.getDateOfBirth().getTime());
-		this.gender = farmer.getGender();
-		this.cellNumber = farmer.getCellNumber();
+		this.id = farmer.getUserId();
+		this.name = farmer.getName();
+		this.username = farmer.getUsername();
 		this.email = farmer.getEmail();
-		this.village = farmer.getVillage();
-		this.subCountry = farmer.getSubCountry();
 		this.membershipId = farmer.getMembershipId();
 		this.numCoffeePlots = farmer.getNumCoffeePlots();
 		this.numCoffeeTrees = farmer.getNumCoffeeTrees();
@@ -64,6 +50,9 @@ public class FarmersInspectionReport {
 		this.coName = farmer.getCoName();
 		this.unionName = farmer.getUnionName();
 		this.fieldCoOrdinator = farmer.getFieldCoOrdinator();
+
+		this.sexType = farmer.getSexType();
+		this.mobileNumber = farmer.getMobileNumber();
 
 		this.version = version;
 		this.subVersion = subVersion;
@@ -79,78 +68,6 @@ public class FarmersInspectionReport {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public Timestamp getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(Timestamp dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public String getCellNumber() {
-		return cellNumber;
-	}
-
-	public void setCellNumber(String cellNumber) {
-		this.cellNumber = cellNumber;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getVillage() {
-		return village;
-	}
-
-	public void setVillage(String village) {
-		this.village = village;
-	}
-
-	public String getSubCountry() {
-		return subCountry;
-	}
-
-	public void setSubCountry(String subCountry) {
-		this.subCountry = subCountry;
 	}
 
 	public String getMembershipId() {
@@ -271,5 +188,45 @@ public class FarmersInspectionReport {
 
 	public void setInspection(Inspection inspection) {
 		this.inspection = inspection;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSexType() {
+		return sexType;
+	}
+
+	public void setSexType(String sexType) {
+		this.sexType = sexType;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 }

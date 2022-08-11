@@ -12,21 +12,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import cropcert.certification.pojo.enumtype.FieldSeparationType;
 import cropcert.certification.pojo.enumtype.Quality;
-
 import io.swagger.annotations.ApiModel;
 
 @Entity
 @Table(name = "farm_plot")
-@XmlRootElement
 @JsonIgnoreProperties
 @ApiModel("FarmPlot")
-public class FarmPlot implements Serializable{
+public class FarmPlot implements Serializable {
 
 	/**
 	 * 
@@ -38,7 +36,7 @@ public class FarmPlot implements Serializable{
 	@SequenceGenerator(name = "farm_plot_id_generator", sequenceName = "farm_plot_id_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
-	
+
 	@Column(name = "fieldName")
 	private String fieldName;
 	@Column(name = "acres")

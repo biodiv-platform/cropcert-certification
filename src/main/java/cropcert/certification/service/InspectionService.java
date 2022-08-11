@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import cropcert.certification.pojo.Inspection;
 import cropcert.certification.pojo.request.ICSSignRequest;
 import cropcert.certification.pojo.response.FarmersInspectionReport;
-import cropcert.user.ApiException;
+import cropcert.entities.ApiException;
 
 public interface InspectionService {
 
@@ -34,7 +34,7 @@ public interface InspectionService {
 			throws ApiException;
 
 	public FarmersInspectionReport save(HttpServletRequest request, Inspection inspection)
-			throws JsonParseException, JsonMappingException, IOException, ApiException;
+			throws JsonParseException, JsonMappingException, IOException, ApiException, cropcert.entities.ApiException;
 	
 	public List<FarmersInspectionReport> bulkUpload(HttpServletRequest request, List<Inspection> inspections)
 			throws JsonParseException, JsonMappingException, IOException, ApiException;
