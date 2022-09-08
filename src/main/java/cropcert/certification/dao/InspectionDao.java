@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import cropcert.certification.pojo.Inspection;
 
@@ -34,6 +34,7 @@ public class InspectionDao extends AbstractDao<Inspection, Long> {
 		return entity;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<Inspection> getResultSet(Integer limit, Integer offset, Query query) {
 
 		Session session = sessionFactory.openSession();
@@ -51,6 +52,7 @@ public class InspectionDao extends AbstractDao<Inspection, Long> {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List<Inspection> getReportsForInspector(Integer limit, Integer offset, Long inspectorId, Long farmerId) {
 
 		String queryStr = "from " + daoType.getSimpleName() + " t where "
@@ -67,6 +69,7 @@ public class InspectionDao extends AbstractDao<Inspection, Long> {
 		return getResultSet(limit, offset, query);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List<Inspection> getLatestReportForFarmers(Integer limit, Integer offset, List<Long> farmerIds) {
 
 		String farmerIdsString = "(";

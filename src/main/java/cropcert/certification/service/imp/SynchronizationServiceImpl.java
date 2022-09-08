@@ -18,9 +18,10 @@ import cropcert.certification.pojo.Synchronization;
 import cropcert.certification.pojo.response.ICSFarmerList;
 import cropcert.certification.service.AbstractService;
 import cropcert.certification.service.SynchronizationService;
-import cropcert.user.ApiException;
-import cropcert.user.api.FarmerApi;
-import cropcert.user.model.Farmer;
+import cropcert.entities.ApiException;
+import cropcert.entities.api.FarmerApi;
+import cropcert.entities.model.Farmer;
+import cropcert.entities.model.UserFarmerDetail;
 
 public class SynchronizationServiceImpl extends AbstractService<Synchronization> implements SynchronizationService {
 
@@ -29,7 +30,7 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 
 	@Inject
 	private FarmerApi farmerApi;
-	
+
 	@Inject
 	private SynchronizationDao synchronizationDao;
 
@@ -41,38 +42,39 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 	@Override
 	public List<ICSFarmerList> getSynchronizationForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, String ccCodes, Boolean isPendingOnly, String firstName) throws ApiException {
-		
-		List<Farmer> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit, offset);
-		
-		Map<Long, Farmer> farmerIdToFarmer = new HashMap<Long, Farmer>();
-		for (Farmer farmer : farmers) {
-			Long id = farmer.getId();
+
+		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit, offset);
+
+		Map<Long, UserFarmerDetail> farmerIdToFarmer = new HashMap<Long, UserFarmerDetail>();
+		for (UserFarmerDetail farmer : farmers) {
+			Long id = farmer.getUserId();
 			farmerIdToFarmer.put(id, farmer);
 		}
 
-		List<Synchronization> synchronizations = synchronizationDao.getSynchronizationForFarmers(limit, offset, farmerIdToFarmer.keySet());
+		List<Synchronization> synchronizations = synchronizationDao.getSynchronizationForFarmers(limit, offset,
+				farmerIdToFarmer.keySet());
 
 		List<ICSFarmerList> icsFarmerLists = new ArrayList<ICSFarmerList>();
 		for (Synchronization synchronization : synchronizations) {
-			if(isPendingOnly && synchronization.getIsReportFinalized()) 
+			if (isPendingOnly && synchronization.getIsReportFinalized())
 				continue;
-			Farmer farmer = farmerIdToFarmer.get(synchronization.getFarmerId());
+			UserFarmerDetail farmer = farmerIdToFarmer.get(synchronization.getFarmerId());
 			Integer version = synchronization.getVersion();
 			Integer subVersion = synchronization.getSubVersion();
 			Long farmerId = synchronization.getFarmerId();
-			
+
 			Long prevReportId;
-			if(version == 0 || (version == 1 && subVersion == 0)) {
+			if (version == 0 || (version == 1 && subVersion == 0)) {
 				prevReportId = null;
-			} else if (subVersion != 0){
+			} else if (subVersion != 0) {
 				Synchronization sync = synchronizationDao.getReport(version, 0, farmerId);
 				prevReportId = sync.getReportId();
 			} else {
-				Synchronization sync = synchronizationDao.getReport(version-1, 0, farmerId);
+				Synchronization sync = synchronizationDao.getReport(version - 1, 0, farmerId);
 				prevReportId = sync.getReportId();
 			}
 			Long lastApprovedReportId;
-			if(version == 0)
+			if (version == 0)
 				lastApprovedReportId = null;
 			else {
 				Synchronization sync = synchronizationDao.getReport(version, 0, farmerId);
@@ -101,9 +103,10 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 		Synchronization synchronization = synchronizationDao.getReport(version, subVersion, farmerId);
 		return synchronization;
 	}
-	
+
 	@Override
-	public List<Synchronization> getRecentSubversionforFarmers(HttpServletRequest request, Integer version, Long farmerId) {
+	public List<Synchronization> getRecentSubversionforFarmers(HttpServletRequest request, Integer version,
+			Long farmerId) {
 		List<Synchronization> synchronizations = synchronizationDao.getRecentSubversionEntry(version, farmerId);
 		return synchronizations;
 	}

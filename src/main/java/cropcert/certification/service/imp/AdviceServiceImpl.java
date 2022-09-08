@@ -1,6 +1,6 @@
 package cropcert.certification.service.imp;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import cropcert.certification.dao.AdviceDao;
 import cropcert.certification.pojo.Advice;
 import cropcert.certification.service.AbstractService;

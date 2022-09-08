@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContextEvent;
 
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -30,13 +31,17 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import javax.inject.Inject;
+import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
+import com.google.inject.servlet.ServletModule;
+import com.strandls.user.controller.UserServiceApi;
+
 import cropcert.certification.controller.ControllerModule;
 import cropcert.certification.dao.DaoModule;
-import cropcert.certification.filter.FilterModule;
 import cropcert.certification.service.ServiceModule;
-import com.sun.jersey.guice.JerseyServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import cropcert.entities.api.UserApi;
 
 /**
  * 
@@ -46,11 +51,11 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 public class CertificationServeletContextListener extends GuiceServletContextListener {
 
 	private final Logger logger = LoggerFactory.getLogger(CertificationServeletContextListener.class);
-	
+
 	@Override
 	protected Injector getInjector() {
 
-		Injector injector = Guice.createInjector(new JerseyServletModule() {
+		Injector injector = Guice.createInjector(new ServletModule() {
 			@Override
 			protected void configureServlets() {
 				Configuration configuration = new Configuration();
@@ -71,17 +76,24 @@ public class CertificationServeletContextListener extends GuiceServletContextLis
 				bind(ObjectMapper.class).toInstance(objectMapper);
 				bind(SessionFactory.class).toInstance(sessionFactory);
 
+				
+				bind(UserApi.class).in(Scopes.SINGLETON);
+				
+				bind(UserServiceApi.class).in(Scopes.SINGLETON);
+				
+				bind(ServletContainer.class).in(Scopes.SINGLETON);
+
 				Map<String, String> props = new HashMap<String, String>();
 				props.put("javax.ws.rs.Application", ApplicationConfig.class.getName());
+				props.put("jersey.config.server.provider.packages", "cropcert");
 				props.put("jersey.config.server.wadl.disableWadl", "true");
 
-				serve("/api/*").with(GuiceContainer.class, props);
+				serve("/api/*").with(ServletContainer.class, props);
 			}
-		}, new ControllerModule(), new DaoModule(), new ServiceModule(), new FilterModule());
+		}, new ControllerModule(), new DaoModule(), new ServiceModule());
 		return injector;
 	}
 
-	
 	protected List<Class<?>> getEntityClassesFromPackage(String packageName)
 			throws URISyntaxException, IOException, ClassNotFoundException {
 

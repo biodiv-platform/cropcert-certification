@@ -5,11 +5,12 @@ import java.util.List;
 
 import cropcert.certification.dao.AbstractDao;
 
-public abstract class  AbstractService<T> {
+public abstract class AbstractService<T> {
 
 	public Class<T> entityClass;
-	private  AbstractDao<T, Long> dao;
-	
+	private AbstractDao<T, Long> dao;
+
+	@SuppressWarnings("unchecked")
 	public AbstractService(AbstractDao<T, Long> dao) {
 		System.out.println("\nAbstractService constructor");
 		this.dao = dao;
@@ -25,7 +26,7 @@ public abstract class  AbstractService<T> {
 		}
 	}
 
-	public T update(T entity)  {
+	public T update(T entity) {
 		try {
 			this.dao.update(entity);
 			return entity;
@@ -53,9 +54,9 @@ public abstract class  AbstractService<T> {
 			throw re;
 		}
 	}
-	
+
 	public List<T> findAll() {
-		
+
 		try {
 			List<T> entities = this.dao.findAll();
 			return entities;
@@ -63,21 +64,22 @@ public abstract class  AbstractService<T> {
 			throw re;
 		}
 	}
-	
+
 	public List<T> findAll(int limit, int offset) {
 		try {
-			if(limit == -1 || offset == -1) return findAll();
+			if (limit == -1 || offset == -1)
+				return findAll();
 			List<T> entities = this.dao.findAll(limit, offset);
 			return entities;
 		} catch (RuntimeException re) {
 			throw re;
 		}
 	}
-	
+
 	public T findByPropertyWithCondtion(String property, Object value, String condition) {
 		return dao.findByPropertyWithCondition(property, value, condition);
 	}
-	
+
 	public List<T> getByPropertyWithCondtion(String property, Object value, String condition, int limit, int offset) {
 		return dao.getByPropertyWithCondtion(property, value, condition, limit, offset);
 	}

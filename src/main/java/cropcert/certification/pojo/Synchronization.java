@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,43 +17,42 @@ import io.swagger.annotations.ApiModel;
 
 @Entity
 @Table(name = "synchronization")
-@XmlRootElement
 @JsonIgnoreProperties
 @ApiModel("Synchronization")
-public class Synchronization implements Serializable{
+public class Synchronization implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6543986103157178072L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sync_id_generator")
 	@SequenceGenerator(name = "sync_id_generator", sequenceName = "sync_id_seq", allocationSize = 1)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
-	
+
 	@Column(name = "farmer_id")
 	private Long farmerId;
-	
+
 	@Column(name = "report_id")
 	private Long reportId;
-	
+
 	@Column(name = "version")
 	private Integer version;
-	
+
 	@Column(name = "sub_version")
 	private Integer subVersion;
-	
+
 	@Column(name = "is_report_finalized")
 	private Boolean isReportFinalized;
-	
+
 	@Column(name = "last_updated")
 	private Timestamp lastUpdated;
-	
+
 	@Column(name = "updated_by")
 	private Long updatedBy;
-	
+
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
