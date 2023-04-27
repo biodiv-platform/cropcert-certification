@@ -11,8 +11,13 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDao<T, K extends Serializable> {
+
+	private static final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
 
 	protected SessionFactory sessionFactory;
 
@@ -79,21 +84,37 @@ public abstract class AbstractDao<T, K extends Serializable> {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll() {
+		List<T> entities = null;
 		Session session = sessionFactory.openSession();
-		Criteria criteria = session.createCriteria(daoType);
-		List<T> entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		try {
+			Criteria criteria = session.createCriteria(daoType);
+			entities = criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY).list();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+
 		return entities;
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public List<T> findAll(int limit, int offset) {
+		List<T> entities = null;
 		Session session = sessionFactory.openSession();
-		Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<T> entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
+		try {
+			Criteria criteria = session.createCriteria(daoType)
+					.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+			entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+
 		return entities;
 	}
 
-	// TODO:improve this to do dynamic finder on any property
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public T findByPropertyWithCondition(String property, Object value, String condition) {
 		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
@@ -107,7 +128,7 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		try {
 			entity = (T) query.getSingleResult();
 		} catch (NoResultException e) {
-			throw e;
+			logger.error(e.getMessage());
 		}
 		session.close();
 		return entity;
@@ -122,14 +143,14 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		org.hibernate.query.Query query = session.createQuery(queryStr);
 		query.setParameter("value", value);
 
-		List<T> resultList = new ArrayList<T>();
+		List<T> resultList = new ArrayList<>();
 		try {
 			if (limit > 0 && offset >= 0)
 				query = query.setFirstResult(offset).setMaxResults(limit);
 			resultList = query.getResultList();
 
 		} catch (NoResultException e) {
-			throw e;
+			logger.error(e.getMessage());
 		}
 		session.close();
 		return resultList;

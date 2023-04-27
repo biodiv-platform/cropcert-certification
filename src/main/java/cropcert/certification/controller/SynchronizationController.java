@@ -63,7 +63,7 @@ public class SynchronizationController {
 			throw new WebApplicationException(
 					Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build());
 		}
-	};
+	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
