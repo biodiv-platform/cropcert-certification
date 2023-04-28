@@ -24,7 +24,10 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import cropcert.certification.CertificationServeletContextListener;
 import net.minidev.json.JSONArray;
 
 /**
@@ -40,6 +43,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 
 	public static final JwtAuthenticator jwtAuthenticator;
 	public static final String JWT_SALT;
+	private static final Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
 	static {
 		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
@@ -47,7 +51,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 		try {
 			properties.load(in);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		JWT_SALT = properties.getProperty("jwtSalt", "12345678901234567890123456789012");
 
@@ -58,7 +62,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 			KeyPair rsaKeyPair = keyGen.generateKeyPair();
 			jwtAuthenticator.addSignatureConfiguration(new RSASignatureConfiguration(rsaKeyPair));
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 

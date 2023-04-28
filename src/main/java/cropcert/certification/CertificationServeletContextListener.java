@@ -66,7 +66,6 @@ public class CertificationServeletContextListener extends GuiceServletContextLis
 						configuration.addAnnotatedClass(cls);
 					}
 				} catch (ClassNotFoundException | IOException | URISyntaxException e) {
-					e.printStackTrace();
 					logger.error(e.getMessage());
 				}
 

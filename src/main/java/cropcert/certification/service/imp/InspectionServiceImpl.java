@@ -14,6 +14,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.User;
 
@@ -37,6 +40,8 @@ import cropcert.entities.model.UserFarmerDetail;
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
 
 	private static final String REPORT_ID = "reportId";
+
+	private static final Logger logger = LoggerFactory.getLogger(InspectionServiceImpl.class);
 
 	@Inject
 	private InspectionDao inspectorDao;
@@ -73,7 +78,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				return inspector.getName();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -104,7 +109,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		try {
 			return bulkUpload(request, inspections).get(0);
 		} catch (ApiException | IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -221,7 +226,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				farmers = farmerApi.findAll(limit, offset);
 			}
 		} catch (ApiException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return getLatestReportForFarmers(farmers, limit, offset);
 	}
