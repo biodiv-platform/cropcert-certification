@@ -91,7 +91,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		try {
 			farmer = farmerApi.find(inspection.getFarmerId());
 		} catch (ApiException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		String inspectorName = getInspectorName(inspection);
 		return new FarmersInspectionReport(farmer, sync.getVersion(), sync.getSubVersion(), inspectorName, inspection);

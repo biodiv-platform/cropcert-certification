@@ -22,6 +22,8 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 
 	private static final String FARMER_ID = "farmerId";
 
+	private String TABLE_NAME = daoType.getSimpleName();
+
 	@Inject
 	protected SynchronizationDao(SessionFactory sessionFactory) {
 		super(sessionFactory);
@@ -44,9 +46,10 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Synchronization getCurrentPartialReport(Long inspectorId, Long farmerId) {
 
-		String queryStr = "from " + daoType.getSimpleName() + " t "
-				+ " where farmerId = :farmerId and updatedBy = :inspectorId "
+		String queryStr = "from  TABLE_NAME t " + " where farmerId = :farmerId and updatedBy = :inspectorId "
 				+ "and isReportFinalized = false and isDeleted = false";
+
+		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
 
 		Session session = sessionFactory.openSession();
 		Query query = session.createQuery(queryStr);
@@ -76,10 +79,11 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		farmerIdsStringBuilder.append("-1)");
 		String farmerIdsString = farmerIdsStringBuilder.toString();
 
-		String queryStr = "select distinct on(farmer_id) * from " + daoType.getSimpleName() + " where farmer_id in "
+		String queryStr = "select distinct on(farmer_id) * from " + " TABLE_NAME " + " where farmer_id in "
 				+ farmerIdsString + " order by farmer_id, version desc, sub_version desc";
 
 		queryStr = queryStr.replace("farmerIdsString", farmerIdsString);
+		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
 
 		Session session = sessionFactory.openSession();
 		org.hibernate.query.Query query = session.createNativeQuery(queryStr, Synchronization.class);
@@ -99,8 +103,9 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 
 	public Synchronization getReport(Integer version, Integer subVersion, Long farmerId) {
 
-		String queryStr = " from " + daoType.getSimpleName() + " t "
+		String queryStr = "from  TABLE_NAME t "
 				+ " where farmerId = :farmerId and version = :version and subVersion = :subVersion";
+		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
 
 		try (Session session = sessionFactory.openSession()) {
 			Query<Synchronization> query = session.createQuery(queryStr, Synchronization.class);
