@@ -22,7 +22,9 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 
 	private static final String FARMER_ID = "farmerId";
 
-	private String TABLE_NAME = daoType.getSimpleName();
+	private static final String TABLE_NAME = "TABLE_NAME";
+
+	private String table = daoType.getSimpleName();
 
 	@Inject
 	protected SynchronizationDao(SessionFactory sessionFactory) {
@@ -49,7 +51,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		String queryStr = "from  TABLE_NAME t " + " where farmerId = :farmerId and updatedBy = :inspectorId "
 				+ "and isReportFinalized = false and isDeleted = false";
 
-		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
+		queryStr = queryStr.replace(TABLE_NAME, table);
 
 		Session session = sessionFactory.openSession();
 		Query query = session.createQuery(queryStr);
@@ -83,7 +85,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 				+ farmerIdsString + " order by farmer_id, version desc, sub_version desc";
 
 		queryStr = queryStr.replace("farmerIdsString", farmerIdsString);
-		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
+		queryStr = queryStr.replace(TABLE_NAME, table);
 
 		Session session = sessionFactory.openSession();
 		org.hibernate.query.Query query = session.createNativeQuery(queryStr, Synchronization.class);
@@ -105,7 +107,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 
 		String queryStr = "from  TABLE_NAME t "
 				+ " where farmerId = :farmerId and version = :version and subVersion = :subVersion";
-		queryStr = queryStr.replace("TABLE_NAME", TABLE_NAME);
+		queryStr = queryStr.replace(TABLE_NAME, table);
 
 		try (Session session = sessionFactory.openSession()) {
 			Query<Synchronization> query = session.createQuery(queryStr, Synchronization.class);
