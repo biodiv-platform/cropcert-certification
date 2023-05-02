@@ -23,6 +23,16 @@ public abstract class AbstractDao<T, K extends Serializable> {
 
 	protected Class<? extends T> daoType;
 
+	private String propertyQuery = "FROM TABLENAME t WHERE t.PROPERTY CONDITION :VALUE";
+
+	private String tableNameConstant = "TABLENAME";
+
+	private String propertyConstant = "PROPERTY";
+
+	private String conditionConstant = "CONDITION";
+
+	private String valueConstant = "VALUE";
+
 	@SuppressWarnings("unchecked")
 	protected AbstractDao(SessionFactory sessionFactory) {
 		daoType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -115,14 +125,16 @@ public abstract class AbstractDao<T, K extends Serializable> {
 		return entities;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public T findByPropertyWithCondition(String property, Object value, String condition) {
-		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
-				+ " :value";
-		Session session = sessionFactory.openSession();
 
-		org.hibernate.query.Query query = session.createQuery(queryStr);
-		query.setParameter("value", value);
+		propertyQuery = propertyQuery.replace(tableNameConstant, daoType.getSimpleName());
+		propertyQuery = propertyQuery.replace(propertyConstant, property);
+		propertyQuery = propertyQuery.replace(conditionConstant, condition);
+
+		Session session = sessionFactory.openSession();
+		org.hibernate.query.Query query = session.createQuery(propertyQuery);
+		query.setParameter(valueConstant, value);
 
 		T entity = null;
 		try {
@@ -137,11 +149,14 @@ public abstract class AbstractDao<T, K extends Serializable> {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<T> getByPropertyWithCondtion(String property, Object value, String condition, int limit, int offset) {
-		String queryStr = "" + "from " + daoType.getSimpleName() + " t " + "where t." + property + " " + condition
-				+ " :value" + " order by id";
+
+		propertyQuery = propertyQuery.replace(tableNameConstant, daoType.getSimpleName());
+		propertyQuery = propertyQuery.replace(propertyConstant, property);
+		propertyQuery = propertyQuery.replace(conditionConstant, condition);
+		String queryStr = propertyQuery + " order by id";
 		Session session = sessionFactory.openSession();
 		org.hibernate.query.Query query = session.createQuery(queryStr);
-		query.setParameter("value", value);
+		query.setParameter(valueConstant, value);
 
 		List<T> resultList = new ArrayList<>();
 		try {

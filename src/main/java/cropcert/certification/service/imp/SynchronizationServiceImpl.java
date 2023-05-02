@@ -40,8 +40,7 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 	public List<ICSFarmerList> getSynchronizationForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, String ccCodes, Boolean isPendingOnly, String firstName) throws ApiException {
 
-		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit,
-				offset);
+		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, -1, -1);
 
 		Map<Long, UserFarmerDetail> farmerIdToFarmer = new HashMap<>();
 		for (UserFarmerDetail farmer : farmers) {

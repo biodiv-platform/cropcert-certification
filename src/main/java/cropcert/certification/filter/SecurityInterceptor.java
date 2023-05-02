@@ -27,7 +27,6 @@ import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cropcert.certification.CertificationServeletContextListener;
 import net.minidev.json.JSONArray;
 
 /**

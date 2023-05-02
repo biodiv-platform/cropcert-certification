@@ -44,7 +44,9 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Synchronization getCurrentPartialReport(Long inspectorId, Long farmerId) {
 
-		String queryStr = "from  synchronization  t  where farmerId = :farmerId and updatedBy = :inspectorId and isReportFinalized = false and isDeleted = false";
+		String queryStr = "from " + daoType.getSimpleName() + " t "
+				+ " where farmerId = :farmerId and updatedBy = :inspectorId "
+				+ "and isReportFinalized = false and isDeleted = false";
 
 		Session session = sessionFactory.openSession();
 		Query query = session.createQuery(queryStr);
@@ -74,7 +76,8 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 		farmerIdsStringBuilder.append("-1)");
 		String farmerIdsString = farmerIdsStringBuilder.toString();
 
-		String queryStr = "select distinct on(farmer_id) * from  synchronization  where farmer_id in  farmerIdsString order by farmer_id, version desc, sub_version desc";
+		String queryStr = "select distinct on(farmer_id) * from " + daoType.getSimpleName() + " where farmer_id in "
+				+ farmerIdsString + " order by farmer_id, version desc, sub_version desc";
 
 		queryStr = queryStr.replace("farmerIdsString", farmerIdsString);
 
@@ -96,7 +99,8 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 
 	public Synchronization getReport(Integer version, Integer subVersion, Long farmerId) {
 
-		String queryStr = " from  synchronization t  where farmerId = :farmerId and version = :version and subVersion = :subVersion";
+		String queryStr = " from " + daoType.getSimpleName() + " t "
+				+ " where farmerId = :farmerId and version = :version and subVersion = :subVersion";
 
 		try (Session session = sessionFactory.openSession()) {
 			Query<Synchronization> query = session.createQuery(queryStr, Synchronization.class);
@@ -115,7 +119,7 @@ public class SynchronizationDao extends AbstractDao<Synchronization, Long> {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Synchronization> getRecentSubversionEntry(Integer version, Long farmerId) {
 
-		String queryStr = "select * from " + " synchronization " + " t " + " where farmer_id = :farmerId "
+		String queryStr = "select * from " + daoType.getSimpleName() + " t " + " where farmer_id = :farmerId "
 				+ " and  sub_version > 0 and " + " version = "
 				+ (version == -1 ? "(select max(version) from synchronization s where s.farmer_id = t.farmer_id)"
 						: version)
