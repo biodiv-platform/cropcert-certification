@@ -122,7 +122,7 @@ public class ApplicationConfig extends Application {
 		return singletons;
 	}
 
-	public static List<Class<?>> getSwaggerAnnotationClassesFromPackage(String packageName)
+	protected List<Class<?>> getSwaggerAnnotationClassesFromPackage(String packageName)
 			throws URISyntaxException, IOException, ClassNotFoundException {
 
 		List<String> classNames = getClassNamesFromPackage(packageName);

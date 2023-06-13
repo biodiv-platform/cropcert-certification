@@ -81,7 +81,7 @@ public class InspectionDao extends AbstractDao<Inspection, Long> {
 		for (Long farmerId : farmerIds) {
 			farmerIdsString.append(farmerId).append(",");
 		}
-		farmerIdsString.setLength(farmerIdsString.length() - 1); // Remove trailing comma
+		farmerIdsString.setLength(farmerIdsString.length() - 1);
 
 		farmerIdsString.append("-1)");
 
