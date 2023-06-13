@@ -24,6 +24,8 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minidev.json.JSONArray;
 
@@ -38,8 +40,9 @@ import net.minidev.json.JSONArray;
  */
 public class SecurityInterceptor implements MethodInterceptor {
 
-	public static JwtAuthenticator jwtAuthenticator;
+	public static final JwtAuthenticator jwtAuthenticator;
 	public static final String JWT_SALT;
+	private static final Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
 	static {
 		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
@@ -47,7 +50,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 		try {
 			properties.load(in);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		JWT_SALT = properties.getProperty("jwtSalt", "12345678901234567890123456789012");
 
@@ -58,7 +61,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 			KeyPair rsaKeyPair = keyGen.generateKeyPair();
 			jwtAuthenticator.addSignatureConfiguration(new RSASignatureConfiguration(rsaKeyPair));
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -78,7 +81,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 
 		// Extract the request out of method using parameter index.
 		HttpServletRequest request = (HttpServletRequest) invocation.getArguments()[parameterIndex];
-		String authorizationHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.AUTHORIZATION);
+		String authorizationHeader = (request).getHeader(HttpHeaders.AUTHORIZATION);
 
 		// Check if the HTTP Authorization header is present and formatted correctly
 		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -96,17 +99,17 @@ public class SecurityInterceptor implements MethodInterceptor {
 
 		// Get roles allowed from the annotation
 		TokenAndUserAuthenticated annotation = method.getAnnotation(TokenAndUserAuthenticated.class);
-		Set<String> allowedPermissions = new HashSet<String>(Arrays.asList(annotation.permissions()));
+		Set<String> allowedPermissions = new HashSet<>(Arrays.asList(annotation.permissions()));
 
 		// Special grand for admin to do everthing
 		JSONArray userRoles = (JSONArray) commonProfile.getAttribute("roles");
-		if(userRoles.contains(Permissions.ADMIN))
+		if (userRoles.contains(Permissions.ADMIN))
 			return invocation.proceed();
 
 		JSONArray userPermissions = (JSONArray) commonProfile.getAttribute("permissions");
 		userPermissions.retainAll(allowedPermissions);
-		
-		if(userPermissions.size() <= 0) {
+
+		if (userPermissions.isEmpty()) {
 			return Response.status(Status.UNAUTHORIZED).entity("User is not autherized to perform this action").build();
 		}
 

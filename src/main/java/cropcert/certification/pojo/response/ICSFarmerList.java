@@ -25,7 +25,6 @@ public class ICSFarmerList {
 
 	public ICSFarmerList() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ICSFarmerList(UserFarmerDetail farmer, Synchronization synchronization) {
