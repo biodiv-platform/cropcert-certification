@@ -101,9 +101,9 @@ public class Inspection implements Serializable {
 	@Column(name = "comments")
 	private String comments;
 
-	// Farm list for the farmer;
+	// Farm list for the farmer
 	@OneToMany(mappedBy = "inspection", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<FarmPlot> farms = new HashSet<FarmPlot>();
+	private Set<FarmPlot> farms = new HashSet<>();
 
 	// Summary column
 	@Column(name = "number_of_coffee_fields")
@@ -128,15 +128,15 @@ public class Inspection implements Serializable {
 	@Column(name = "livestock_treatment_conducted_5m_from_coffee")
 	private Boolean livestockTreatmentConducted5mFromCoffee;
 	@OneToMany(mappedBy = "inspection", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Animal> animals = new HashSet<Animal>();
+	private Set<Animal> animals = new HashSet<>();
 
-	// Recommendation;
+	// Recommendation
 	@Column(name = "has_farmer_implemented_previous_advice")
 	@Enumerated(EnumType.STRING)
 	private Decision hasFarmerImplementedPreviousAdvice;
 
 	@OneToMany(mappedBy = "inspection", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Advice> advices = new HashSet<Advice>();
+	private Set<Advice> advices = new HashSet<>();
 	@Column(name = "made_serious_violation")
 	private Boolean madeSeriousViolation;
 	@Column(name = "violation_date")

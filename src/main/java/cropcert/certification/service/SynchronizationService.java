@@ -5,20 +5,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import cropcert.certification.pojo.Synchronization;
 import cropcert.certification.pojo.response.ICSFarmerList;
 import cropcert.entities.ApiException;
 
 public interface SynchronizationService {
 
-	public Synchronization save(HttpServletRequest request, String jsonString)
-			throws JsonParseException, JsonMappingException, IOException;
+	public Synchronization save(HttpServletRequest request, String jsonString) throws IOException;
 
 	public Synchronization save(Synchronization synchronization);
-	
+
 	public Synchronization update(Synchronization synchronization);
 
 	public Synchronization findByPropertyWithCondtion(String property, Object value, String condition);
@@ -31,5 +27,6 @@ public interface SynchronizationService {
 
 	public Synchronization getReport(HttpServletRequest request, Integer version, Integer subVersion, Long farmerId);
 
-	public List<Synchronization> getRecentSubversionforFarmers(HttpServletRequest request, Integer version, Long farmerId);
+	public List<Synchronization> getRecentSubversionforFarmers(HttpServletRequest request, Integer version,
+			Long farmerId);
 }

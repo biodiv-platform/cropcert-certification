@@ -9,8 +9,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cropcert.certification.dao.SynchronizationDao;
@@ -20,7 +18,6 @@ import cropcert.certification.service.AbstractService;
 import cropcert.certification.service.SynchronizationService;
 import cropcert.entities.ApiException;
 import cropcert.entities.api.FarmerApi;
-import cropcert.entities.model.Farmer;
 import cropcert.entities.model.UserFarmerDetail;
 
 public class SynchronizationServiceImpl extends AbstractService<Synchronization> implements SynchronizationService {
@@ -43,9 +40,9 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 	public List<ICSFarmerList> getSynchronizationForCollectionCenter(HttpServletRequest request, Integer limit,
 			Integer offset, String ccCodes, Boolean isPendingOnly, String firstName) throws ApiException {
 
-		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, limit, offset);
+		List<UserFarmerDetail> farmers = farmerApi.getFarmerForMultipleCollectionCenter(ccCodes, firstName, -1, -1);
 
-		Map<Long, UserFarmerDetail> farmerIdToFarmer = new HashMap<Long, UserFarmerDetail>();
+		Map<Long, UserFarmerDetail> farmerIdToFarmer = new HashMap<>();
 		for (UserFarmerDetail farmer : farmers) {
 			Long id = farmer.getUserId();
 			farmerIdToFarmer.put(id, farmer);
@@ -54,7 +51,7 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 		List<Synchronization> synchronizations = synchronizationDao.getSynchronizationForFarmers(limit, offset,
 				farmerIdToFarmer.keySet());
 
-		List<ICSFarmerList> icsFarmerLists = new ArrayList<ICSFarmerList>();
+		List<ICSFarmerList> icsFarmerLists = new ArrayList<>();
 		for (Synchronization synchronization : synchronizations) {
 			if (isPendingOnly && synchronization.getIsReportFinalized())
 				continue;
@@ -91,8 +88,7 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 	}
 
 	@Override
-	public Synchronization save(HttpServletRequest request, String jsonString)
-			throws JsonParseException, JsonMappingException, IOException {
+	public Synchronization save(HttpServletRequest request, String jsonString) throws IOException {
 		Synchronization synchronization = objectMapper.readValue(jsonString, Synchronization.class);
 		synchronization = save(synchronization);
 		return synchronization;
@@ -100,14 +96,12 @@ public class SynchronizationServiceImpl extends AbstractService<Synchronization>
 
 	@Override
 	public Synchronization getReport(HttpServletRequest request, Integer version, Integer subVersion, Long farmerId) {
-		Synchronization synchronization = synchronizationDao.getReport(version, subVersion, farmerId);
-		return synchronization;
+		return synchronizationDao.getReport(version, subVersion, farmerId);
 	}
 
 	@Override
 	public List<Synchronization> getRecentSubversionforFarmers(HttpServletRequest request, Integer version,
 			Long farmerId) {
-		List<Synchronization> synchronizations = synchronizationDao.getRecentSubversionEntry(version, farmerId);
-		return synchronizations;
+		return synchronizationDao.getRecentSubversionEntry(version, farmerId);
 	}
 }

@@ -14,6 +14,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.User;
 
@@ -35,6 +38,10 @@ import cropcert.entities.model.CollectionCenterShow;
 import cropcert.entities.model.UserFarmerDetail;
 
 public class InspectionServiceImpl extends AbstractService<Inspection> implements InspectionService {
+
+	private static final String REPORT_ID = "reportId";
+
+	private static final Logger logger = LoggerFactory.getLogger(InspectionServiceImpl.class);
 
 	@Inject
 	private InspectionDao inspectorDao;
@@ -71,7 +78,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				return inspector.getName();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
@@ -79,12 +86,12 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	@Override
 	public FarmersInspectionReport getFarmerInspectionReport(Long id) {
 		Inspection inspection = super.findById(id);
-		Synchronization sync = synchronizationService.findByPropertyWithCondtion("reportId", inspection.getId(), "=");
+		Synchronization sync = synchronizationService.findByPropertyWithCondtion(REPORT_ID, inspection.getId(), "=");
 		UserFarmerDetail farmer = null;
 		try {
 			farmer = farmerApi.find(inspection.getFarmerId());
 		} catch (ApiException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		String inspectorName = getInspectorName(inspection);
 		return new FarmersInspectionReport(farmer, sync.getVersion(), sync.getSubVersion(), inspectorName, inspection);
@@ -96,11 +103,15 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 	}
 
 	@Override
-	public FarmersInspectionReport save(HttpServletRequest request, Inspection inspection)
-			throws IOException, ApiException {
+	public FarmersInspectionReport save(HttpServletRequest request, Inspection inspection) throws IOException {
 		List<Inspection> inspections = new ArrayList<>();
 		inspections.add(inspection);
-		return bulkUpload(request, inspections).get(0);
+		try {
+			return bulkUpload(request, inspections).get(0);
+		} catch (ApiException | IOException e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
@@ -131,7 +142,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 			} else { // Will definitely have the inspection report otherwise previous condition is
 						// false.
 				Long inspectionId = farmersInspectionReport.getInspection().getId();
-				List<Synchronization> syncs = synchronizationService.getByPropertyWithCondtion("reportId", inspectionId,
+				List<Synchronization> syncs = synchronizationService.getByPropertyWithCondtion(REPORT_ID, inspectionId,
 						"=", -1, -1);
 
 				Synchronization synchronization = syncs.get(0);
@@ -161,7 +172,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 		List<FarmersInspectionReport> reports = new ArrayList<>();
 		for (Inspection inspection : inspections) {
 			Long inspectionId = inspection.getId();
-			Synchronization syncs = synchronizationService.findByPropertyWithCondtion("reportId", inspectionId, "=");
+			Synchronization syncs = synchronizationService.findByPropertyWithCondtion(REPORT_ID, inspectionId, "=");
 
 			String inspectorName = getInspectorName(inspection);
 			FarmersInspectionReport report = new FarmersInspectionReport(farmer, syncs.getVersion(),
@@ -215,7 +226,7 @@ public class InspectionServiceImpl extends AbstractService<Inspection> implement
 				farmers = farmerApi.findAll(limit, offset);
 			}
 		} catch (ApiException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return getLatestReportForFarmers(farmers, limit, offset);
 	}
